@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunucu Haber Merkezi</title>
+    <style>
+        :root {
+            --ana-renk: #7289da; /* Discord mavisi veya senin RGB rengin */
+            --arka-plan: #0f0f12;
+            --kart-renk: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            background-color: var(--arka-plan);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            padding: 50px 20px;
+            text-align: center;
+            background: linear-gradient(45deg, #1a1a2e, #16213e);
+            width: 100%;
+            border-bottom: 2px solid var(--ana-renk);
+        }
+
+        .container {
+            max-width: 900px;
+            width: 95%;
+            margin-top: -30px;
+        }
+
+        .haber-kart {
+            background: var(--kart-renk);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .haber-kart:hover {
+            transform: translateY(-5px);
+            border-color: var(--ana-renk);
+        }
+
+        .kategori {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .güncelleme { background: #43b581; }
+        .etkinlik { background: #faa61a; }
+        .bakım { background: #f04747; }
+
+        .tarih {
+            color: #888;
+            font-size: 14px;
+            float: right;
+        }
+
+        h2 { margin: 0 0 10px 0; color: var(--ana-renk); }
+        p { line-height: 1.6; color: #ccc; }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🚀 SUNUCU HABER MERKEZİ</h1>
+    <p>En güncel duyurular ve yenilikler burada!</p>
+</header>
+
+<div class="container" id="haber-listesi">
+    </div>
+
+<script>
+    // SADECE BURAYI DÜZENLEYECEKSİN - YENİ HABERİ ÜSTE EKLE
+    const haberler = [
+        
+        {
+            kategori: "N/A",
+            baslik: "N/A",
+            metin: "N/A",
+            tarih: "N/A"
+        },
+        {
+            kategori: "N/A",
+            baslik: "N/A",
+            metin: "N/A",
+            tarih: "N/A"
+        }
+    ];
+
+    // Haberleri ekrana basan sihirli kod
+    const liste = document.getElementById('haber-listesi');
+    
+    haberler.forEach(haber => {
+        liste.innerHTML += `
+            <div class="haber-kart">
+                <span class="tarih">${haber.tarih}</span>
+                <span class="kategori ${haber.kategori}">${haber.kategori}</span>
+                <h2>${haber.baslik}</h2>
+                <p>${haber.metin}</p>
+            </div>
+        `;
+    });
+</script>
+
+</body>
+</html>
