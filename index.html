@@ -3,118 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sunucu Haber Merkezi</title>
+    <title>Sistem Duyuruları</title>
     <style>
+        /* TEMA DEĞİŞKENLERİ */
         :root {
-            --ana-renk: #7289da; /* Discord mavisi veya senin RGB rengin */
-            --arka-plan: #0f0f12;
-            --kart-renk: rgba(255, 255, 255, 0.05);
+            --ana-renk: #00d2ff;
+            --ikincil-renk: #3a7bd5;
+            --gecis: 0.3s ease;
+        }
+
+        /* KARANLIK TEMA (VARSAYILAN) */
+        body.dark-mode {
+            --bg: #0b0e14;
+            --kart-bg: rgba(255, 255, 255, 0.05);
+            --yazi: #e0e0e0;
+            --yazi-ikincil: #b9bbbe;
+            --cizgi: rgba(0, 210, 255, 0.3);
+            --header-bg: radial-gradient(circle at center, #16213e 0%, #0b0e14 100%);
+        }
+
+        /* AYDINLIK TEMA */
+        body.light-mode {
+            --bg: #f5f7fa;
+            --kart-bg: #ffffff;
+            --yazi: #2c3e50;
+            --yazi-ikincil: #5d6d7e;
+            --cizgi: rgba(58, 123, 213, 0.2);
+            --header-bg: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
         }
 
         body {
-            background-color: var(--arka-plan);
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg);
+            color: var(--yazi);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            transition: var(--gecis);
+        }
+
+        /* TEMA BUTONU */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--ana-renk);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         header {
-            padding: 50px 20px;
             text-align: center;
-            background: linear-gradient(45deg, #1a1a2e, #16213e);
-            width: 100%;
-            border-bottom: 2px solid var(--ana-renk);
+            padding: 80px 20px;
+            background: var(--header-bg);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
         }
 
+        h1 { margin: 0; font-size: 2.5rem; letter-spacing: 2px; }
+
+        /* TIMELINE YAPISI */
         .container {
-            max-width: 900px;
-            width: 95%;
-            margin-top: -30px;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        /* DİKEY ÇİZGİ */
+        .container::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--cizgi);
+        }
+
+        .haber-item {
+            position: relative;
+            margin-bottom: 40px;
+            padding-left: 60px;
+        }
+
+        /* ÇİZGİDEKİ NOKTA */
+        .haber-item::after {
+            content: '';
+            position: absolute;
+            left: 24px;
+            top: 25px;
+            width: 15px;
+            height: 15px;
+            background: var(--ana-renk);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--ana-renk);
+            z-index: 2;
         }
 
         .haber-kart {
-            background: var(--kart-renk);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
+            background: var(--kart-bg);
             padding: 25px;
-            margin-bottom: 25px;
-            transition: 0.3s;
-            position: relative;
-            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .haber-kart:hover {
-            transform: translateY(-5px);
-            border-color: var(--ana-renk);
+        .tarih { color: var(--ana-renk); font-weight: bold; font-size: 0.9rem; }
+        h2 { margin: 10px 0; font-size: 1.5rem; }
+        p { color: var(--yazi-ikincil); line-height: 1.6; }
+
+        /* MOBİL UYUMLULUK */
+        @media (max-width: 600px) {
+            .container::before { left: 20px; }
+            .haber-item { padding-left: 45px; }
+            .haber-item::after { left: 14px; }
+            h1 { font-size: 1.8rem; }
         }
-
-        .kategori {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 5px;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-        }
-
-        .güncelleme { background: #43b581; }
-        .etkinlik { background: #faa61a; }
-        .bakım { background: #f04747; }
-
-        .tarih {
-            color: #888;
-            font-size: 14px;
-            float: right;
-        }
-
-        h2 { margin: 0 0 10px 0; color: var(--ana-renk); }
-        p { line-height: 1.6; color: #ccc; }
-
     </style>
 </head>
-<body>
+<body class="dark-mode"> <button class="theme-toggle" onclick="toggleTheme()">🌓 Temayı Değiştir</button>
 
 <header>
-    <h1>🚀 SUNUCU HABER MERKEZİ</h1>
-    <p>En güncel duyurular ve yenilikler burada!</p>
+    <h1>SYSTEM LOGS</h1>
+    <p>Sunucu gelişmeleri ve önemli haberler.</p>
 </header>
 
-<div class="container" id="haber-listesi">
+<div class="container" id="liste">
     </div>
 
 <script>
-    // SADECE BURAYI DÜZENLEYECEKSİN - YENİ HABERİ ÜSTE EKLE
+    // 1. TEMA DEĞİŞTİRME MANTIĞI
+    function toggleTheme() {
+        const body = document.body;
+        if (body.classList.contains('dark-mode')) {
+            body.classList.replace('dark-mode', 'light-mode');
+            localStorage.setItem('tema', 'light');
+        } else {
+            body.classList.replace('light-mode', 'dark-mode');
+            localStorage.setItem('tema', 'dark');
+        }
+    }
+
+    // Sayfa açıldığında kayıtlı temayı yükle
+    if (localStorage.getItem('tema') === 'light') {
+        document.body.classList.replace('dark-mode', 'light-mode');
+    }
+
+    // 2. DUYURU VERİLERİ (BURAYI DÜZENLEYECEKSİN)
     const haberler = [
-        
         {
-            kategori: "N/A",
-            baslik: "N/A",
-            metin: "N/A",
-            tarih: "N/A"
+            tarih: "24 ŞUBAT 2026",
+            baslik: "V3.0 Modern Arayüz Yayında!",
+            metin: "Sitemiz artık hem karanlık hem aydınlık mod desteğine sahip. Ayrıca mobil cihazlar için tam optimizasyon sağlandı."
         },
         {
-            kategori: "N/A",
-            baslik: "N/A",
-            metin: "N/A",
-            tarih: "N/A"
+            tarih: "20 ŞUBAT 2026",
+            baslik: "Güvenlik Güncellemesi",
+            metin: "Sunucu genelinde veri güvenliği çalışmaları tamamlandı. Keyifli oyunlar dileriz!"
         }
     ];
 
-    // Haberleri ekrana basan sihirli kod
-    const liste = document.getElementById('haber-listesi');
-    
-    haberler.forEach(haber => {
-        liste.innerHTML += `
-            <div class="haber-kart">
-                <span class="tarih">${haber.tarih}</span>
-                <span class="kategori ${haber.kategori}">${haber.kategori}</span>
-                <h2>${haber.baslik}</h2>
-                <p>${haber.metin}</p>
+    // Duyuruları ekrana bas
+    const listeDiv = document.getElementById('liste');
+    haberler.forEach(h => {
+        listeDiv.innerHTML += `
+            <div class="haber-item">
+                <div class="haber-kart">
+                    <span class="tarih">${h.tarih}</span>
+                    <h2>${h.baslik}</h2>
+                    <p>${h.metin}</p>
+                </div>
             </div>
         `;
     });
