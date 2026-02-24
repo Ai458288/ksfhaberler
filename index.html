@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Duyuruları</title>
+    <title>K.S.F Sistem Duyuruları</title>
     <style>
         /* TEMA DEĞİŞKENLERİ */
         :root {
@@ -32,12 +32,21 @@
             --header-bg: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
         }
 
+        /* KOPYALAMA ENGELLEYİCİ CSS */
+        * {
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10+ */
+            user-select: none; /* Standart */
+            -webkit-user-drag: none; /* Resim sürüklemeyi engeller */
+        }
+
         body {
             background-color: var(--bg);
             color: var(--yazi);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             transition: var(--gecis);
+            overflow-x: hidden;
         }
 
         /* TEMA BUTONU */
@@ -54,7 +63,10 @@
             cursor: pointer;
             font-weight: bold;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
         }
+
+        .theme-toggle:active { transform: scale(0.9); }
 
         header {
             text-align: center;
@@ -73,7 +85,6 @@
             position: relative;
         }
 
-        /* DİKEY ÇİZGİ */
         .container::before {
             content: '';
             position: absolute;
@@ -90,7 +101,6 @@
             padding-left: 60px;
         }
 
-        /* ÇİZGİDEKİ NOKTA */
         .haber-item::after {
             content: '';
             position: absolute;
@@ -110,6 +120,12 @@
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .haber-kart:hover {
+            transform: translateX(5px);
+            border-color: var(--ana-renk);
         }
 
         .tarih { color: var(--ana-renk); font-weight: bold; font-size: 0.9rem; }
@@ -122,21 +138,33 @@
             .haber-item { padding-left: 45px; }
             .haber-item::after { left: 14px; }
             h1 { font-size: 1.8rem; }
+            header { padding: 50px 15px; }
         }
     </style>
 </head>
-<body class="dark-mode"> <button class="theme-toggle" onclick="toggleTheme()">🌓 Temayı Değiştir</button>
+<body class="dark-mode" oncontextmenu="return false;"> 
+
+<button class="theme-toggle" onclick="toggleTheme()">🌓 Temayı Değiştir</button>
 
 <header>
     <h1>📜 K.S.F Haberler</h1>
-    <p>Sunucu gelişmeleri ve önemli haberlerler için resmi sitemiz!</p>
+    <p>Sunucu gelişmeleri ve önemli haberler için resmi sitemiz!</p>
 </header>
 
-<div class="container" id="liste">
-    </div>
+<div class="container" id="liste"></div>
 
 <script>
-    // 1. TEMA DEĞİŞTİRME MANTIĞI
+    /* 1. KOPYALAMA VE SAĞ TIK ENGELİ (JS) */
+    document.addEventListener('contextmenu', event => event.preventDefault()); // Sağ tık engeli
+    document.addEventListener('keydown', (e) => {
+        // Ctrl+C, Ctrl+V, Ctrl+U, Ctrl+S, F12 engelleme
+        if (e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'u' || e.key === 's' || e.key === 'a' || e.key === 'i')) {
+            e.preventDefault();
+        }
+        if (e.keyCode == 123) { e.preventDefault(); } // F12
+    });
+
+    /* 2. TEMA DEĞİŞTİRME MANTIĞI */
     function toggleTheme() {
         const body = document.body;
         if (body.classList.contains('dark-mode')) {
@@ -148,17 +176,17 @@
         }
     }
 
-    // Sayfa açıldığında kayıtlı temayı yükle
     if (localStorage.getItem('tema') === 'light') {
         document.body.classList.replace('dark-mode', 'light-mode');
     }
 
-    // 2. DUYURU VERİLERİ (BURAYI DÜZENLEYECEKSİN)
+    /* 3. DUYURU VERİLERİ */
+    // Yeni haber eklemek istersen buradaki listenin EN ÜSTÜNE ekleme yapabilirsin.
     const haberler = [
         {
             tarih: "24 ŞUBAT 2026",
-            baslik: "Modern Duyuru Arayüzü İle Beta Olarak Yayında!",
-            metin: "Sitemiz beta versiyonu ile yayında bol şans KSF!"
+            baslik: "Modern Duyuru Arayüzü Beta Olarak Yayında!",
+            metin: "Sitemiz beta versiyonu ile yayında. Artık kopyalamaya karşı korumalı ve tam mobil uyumlu! Bol şans KSF!"
         },
         {
             tarih: "23 ŞUBAT 2026",
@@ -167,7 +195,6 @@
         }
     ];
 
-    // Duyuruları ekrana bas
     const listeDiv = document.getElementById('liste');
     haberler.forEach(h => {
         listeDiv.innerHTML += `
